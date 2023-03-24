@@ -163,4 +163,20 @@ class TaskTest {
 			return Task.complete(-1);
 		}).await()));
 	}
+
+	@Test
+	public void successAnd() {
+		assertDoesNotThrow(() -> assertEquals(3, Task.complete(1).and(value -> Task.complete(value + 2)).await()));
+	}
+
+	@Test
+	public void failureAnd() {
+		Exception e = new Exception("hello");
+		Task<Integer> task = Task.<Integer>fail(e)
+			.and(value -> Task.complete(value + 2));
+		TaskResult<Integer> result = task.waitForResult();
+		assertTrue(result.didThrow);
+		assertNull(result.value);
+		assertEquals(e, result.exception);
+	}
 }
