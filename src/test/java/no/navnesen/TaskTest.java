@@ -90,4 +90,20 @@ class TaskTest {
 			assertNotNull(task._result.get());
 		});
 	}
+
+	@Test
+	public void waitForResultThreadInterruptionShouldDoNothing() {
+		assertDoesNotThrow(() -> {
+			Thread currentThread = Thread.currentThread();
+			Task<Integer> task = new Task<>(() -> {
+				Thread.sleep(100);
+				currentThread.interrupt();
+				Thread.sleep(100);
+				return 0;
+			});
+			assertNull(task._result.get());
+			assertEquals(0, task.await());
+			assertNotNull(task._result.get());
+		});
+	}
 }
