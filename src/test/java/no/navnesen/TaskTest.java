@@ -141,4 +141,9 @@ class TaskTest {
 		assertNull(result.value);
 		assertEquals(e, result.exception);
 	}
+
+	@Test
+	public void successOr() {
+		assertDoesNotThrow(() -> assertEquals(1, Task.complete(1).or(ex -> -1).await()));
+	}
 }
