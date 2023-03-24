@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class Task<T> {
 	public static <T> Task<T> complete(T value) {
-		throw new RuntimeException("Not implemented");
+		return new Task<>(TaskResult.success(value));
 	}
 
 	public static <T> Task<T> fail(Exception exception) {
