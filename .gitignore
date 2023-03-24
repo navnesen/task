@@ -2,6 +2,11 @@
 
 !/.gitignore
 
+# GitHub Workflows
+!/.github/
+!/.github/workflows/
+!/.github/workflows/*.yml
+
 # Gradle Wrapper
 !/gradle/
 !/gradle/wrapper/
