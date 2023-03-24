@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * A quick and easy method for performing synchronous tasks in an asynchronous manner.
  */
-public class Task<T> {
+public class Task<T> implements Awaitable<T> {
 	public static <T> Task<T> complete(T value) {
 		return new Task<>(TaskResult.success(value));
 	}
@@ -100,7 +100,8 @@ public class Task<T> {
 		});
 	}
 
-	protected synchronized TaskResult<T> waitForResult() {
+	@Override
+	public synchronized TaskResult<T> waitForResult() {
 		TaskResult<T> result = this._result.get();
 		while (result == null) {
 			try {
@@ -121,8 +122,8 @@ public class Task<T> {
 		this.applyResult(TaskResult.failure(exception));
 	}
 
-	protected void applyResult(TaskResult<T> result) {
-		this._result.set(result);
+	protected void applyResult(AwaitableResult<T> result) {
+		this._result.set(TaskResult.from(result));
 		notifyAll();
 	}
 }
