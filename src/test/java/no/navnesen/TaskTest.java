@@ -41,4 +41,29 @@ class TaskTest {
 		});
 	}
 
+	@Test
+	public void constructorAcceptsAction() {
+		assertDoesNotThrow(() -> {
+			Task<Integer> task = new Task<>(() -> {
+				Thread.sleep(100);
+				return 0;
+			});
+			assertNull(task._result.get());
+			assertEquals(0, task.await());
+			assertNotNull(task._result.get());
+		});
+
+		assertDoesNotThrow(() -> {
+			Task<Integer> task = new Task<>(() -> {
+				throw new Exception("hello");
+			});
+			assertNull(task._result.get());
+			assertThrows(
+				RuntimeException.class,
+				task::await,
+				"hello"
+			);
+			assertNotNull(task._result.get());
+		});
+	}
 }
