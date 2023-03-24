@@ -72,7 +72,11 @@ public class Task<T> {
 	}
 
 	public <V> Task<V> map(TaskActionMap<V, T> action) {
-		throw new RuntimeException("Not implemented");
+		return new Task<>(() -> {
+			TaskResult<T> result = this.waitForResult();
+			if (result.didThrow) throw result.exception;
+			return action.run(result.value);
+		});
 	}
 
 	public Task<T> or(TaskActionOr<T> action) {
