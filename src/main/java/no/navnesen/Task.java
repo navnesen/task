@@ -16,7 +16,7 @@ public class Task<T> {
 	}
 
 	public static <T> Task<List<T>> all(List<Task<T>> tasks) {
-		throw new RuntimeException("Not implemented");
+		return new Task<>(() -> tasks.stream().map(Task::await).toList());
 	}
 
 	protected final AtomicReference<TaskResult<T>> _result = new AtomicReference<>(null);
