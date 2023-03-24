@@ -12,7 +12,7 @@ public class Task<T> {
 	}
 
 	public static <T> Task<T> fail(Exception exception) {
-		throw new RuntimeException("Not implemented");
+		return new Task<>(TaskResult.failure(exception));
 	}
 
 	public static <T> Task<List<T>> all(List<Task<T>> tasks) {
