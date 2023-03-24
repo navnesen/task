@@ -91,6 +91,16 @@ public class Task<T> {
 		});
 	}
 
+	public Task<T> orElse(TaskActionOrElse<T> action) {
+		return new Task<>(() -> {
+			TaskResult<T> result = this.waitForResult();
+			if (!result.didThrow) {
+				return TaskResult.success(result.value);
+			}
+			return action.run(result.exception).waitForResult();
+		});
+	}
+
 	protected synchronized TaskResult<T> waitForResult() {
 		TaskResult<T> result = this._result.get();
 		while (result == null) {
