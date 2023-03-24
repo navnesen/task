@@ -39,6 +39,20 @@ public class Task<T> {
 		}).start();
 	}
 
+	public Task(TaskActionResult<T> action) {
+		new Thread(() -> {
+			synchronized (this) {
+				try {
+					this._result.set(action.run());
+				} catch (Exception exception) {
+					this._result.set(TaskResult.failure(exception));
+				} finally {
+					notifyAll();
+				}
+			}
+		}).start();
+	}
+
 	public T await() {
 		throw new RuntimeException("Not implemented");
 	}
