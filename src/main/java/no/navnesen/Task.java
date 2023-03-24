@@ -74,7 +74,9 @@ public class Task<T> {
 	public <V> Task<V> map(TaskActionMap<V, T> action) {
 		return new Task<>(() -> {
 			TaskResult<T> result = this.waitForResult();
-			if (result.didThrow) throw result.exception;
+			if (result.didThrow) {
+				throw result.exception;
+			}
 			return action.run(result.value);
 		});
 	}
