@@ -21,6 +21,9 @@ public class Task<T> {
 
 	protected final AtomicReference<TaskResult<T>> _result = new AtomicReference<>(null);
 
+	public Task() {
+	}
+
 	public Task(TaskResult<T> result) {
 		this._result.set(result);
 	}
@@ -29,11 +32,9 @@ public class Task<T> {
 		new Thread(() -> {
 			synchronized (this) {
 				try {
-					this._result.set(TaskResult.success(action.run()));
+					this.completed(action.run());
 				} catch (Exception exception) {
-					this._result.set(TaskResult.failure(exception));
-				} finally {
-					notifyAll();
+					this.failed(exception);
 				}
 			}
 		}).start();
@@ -43,11 +44,9 @@ public class Task<T> {
 		new Thread(() -> {
 			synchronized (this) {
 				try {
-					this._result.set(action.run());
+					this.applyResult(action.run());
 				} catch (Exception exception) {
-					this._result.set(TaskResult.failure(exception));
-				} finally {
-					notifyAll();
+					this.failed(exception);
 				}
 			}
 		}).start();
@@ -112,5 +111,18 @@ public class Task<T> {
 			result = this._result.get();
 		}
 		return result;
+	}
+
+	protected void completed(T value) {
+		this.applyResult(TaskResult.success(value));
+	}
+
+	protected void failed(Exception exception) {
+		this.applyResult(TaskResult.failure(exception));
+	}
+
+	protected void applyResult(TaskResult<T> result) {
+		this._result.set(result);
+		notifyAll();
 	}
 }
