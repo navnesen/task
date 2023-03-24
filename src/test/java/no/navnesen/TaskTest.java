@@ -144,4 +144,23 @@ class TaskTest {
 			return -1;
 		}).await()));
 	}
+
+	@Test
+	public void successOrElse() {
+		assertDoesNotThrow(() -> assertEquals(1, Task.complete(1).orElse(ex -> Task.complete(-1)).await()));
+	}
+
+	@Test
+	public void failureOrElse() {
+		assertDoesNotThrow(() -> assertEquals(-1, Task.fail(new Exception("hello")).orElse(ex -> {
+			assertThrows(
+				Exception.class,
+				() -> {
+					throw ex;
+				},
+				"hello"
+			);
+			return Task.complete(-1);
+		}).await()));
+	}
 }
