@@ -130,4 +130,15 @@ class TaskTest {
 		assertFalse(Task.complete(2).map(isOne).await());
 		assertFalse(Task.complete(0).map(isOne).await());
 	}
+
+	@Test
+	public void failureMap() {
+		Exception e = new Exception("hello");
+		Task<Boolean> task = Task.<Integer>fail(e)
+			.map(value -> value == 1);
+		TaskResult<Boolean> result = task.waitForResult();
+		assertTrue(result.didThrow);
+		assertNull(result.value);
+		assertEquals(e, result.exception);
+	}
 }
