@@ -21,6 +21,10 @@ public class Task<T> {
 
 	protected final AtomicReference<TaskResult<T>> _result = new AtomicReference<>(null);
 
+	public Task(TaskResult<T> result) {
+		this._result.set(result);
+	}
+
 	public T await() {
 		throw new RuntimeException("Not implemented");
 	}
