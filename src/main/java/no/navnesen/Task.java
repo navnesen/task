@@ -68,4 +68,17 @@ public class Task<T> {
 	public Task<T> or(TaskActionOr<T> action) {
 		throw new RuntimeException("Not implemented");
 	}
+
+	protected synchronized TaskResult<T> waitForResult() {
+		TaskResult<T> result = this._result.get();
+		while (result == null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+			result = this._result.get();
+		}
+		return result;
+	}
 }
