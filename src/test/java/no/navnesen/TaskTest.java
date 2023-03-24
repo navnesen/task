@@ -2,6 +2,9 @@ package no.navnesen;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
@@ -105,5 +108,18 @@ class TaskTest {
 			assertEquals(0, task.await());
 			assertNotNull(task._result.get());
 		});
+	}
+
+	@Test
+	public void awaitAll() {
+		List<Task<Integer>> tasks = new ArrayList<>();
+		tasks.add(Task.complete(1));
+		tasks.add(Task.complete(2));
+		tasks.add(Task.complete(3));
+
+		assertArrayEquals(
+			new Integer[]{1, 2, 3},
+			Task.all(tasks).await().toArray(new Integer[3])
+		);
 	}
 }
