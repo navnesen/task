@@ -54,7 +54,11 @@ public class Task<T> {
 	}
 
 	public T await() {
-		throw new RuntimeException("Not implemented");
+		final TaskResult<T> result = this.waitForResult();
+		if (result.didThrow) {
+			throw new RuntimeException(result.exception);
+		}
+		return result.value;
 	}
 
 	public <V> Task<V> and(TaskActionAnd<V, T> action) {
