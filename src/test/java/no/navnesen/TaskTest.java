@@ -66,4 +66,28 @@ class TaskTest {
 			assertNotNull(task._result.get());
 		});
 	}
+
+	@Test
+	public void constructorAcceptsTaskResultAction() {
+		assertDoesNotThrow(() -> {
+			Task<Integer> task = new Task<>(() -> {
+				Thread.sleep(100);
+				return TaskResult.success(0);
+			});
+			assertNull(task._result.get());
+			assertEquals(0, task.await());
+			assertNotNull(task._result.get());
+		});
+
+		assertDoesNotThrow(() -> {
+			Task<Integer> task = new Task<>(() -> TaskResult.failure(new Exception("hello")));
+			assertNull(task._result.get());
+			assertThrows(
+				RuntimeException.class,
+				task::await,
+				"hello"
+			);
+			assertNotNull(task._result.get());
+		});
+	}
 }
