@@ -122,4 +122,12 @@ class TaskTest {
 			Task.all(tasks).await().toArray(new Integer[3])
 		);
 	}
+
+	@Test
+	public void successMap() {
+		TaskActionMap<Boolean, Integer> isOne = value -> value == 1;
+		assertTrue(Task.complete(1).map(isOne).await());
+		assertFalse(Task.complete(2).map(isOne).await());
+		assertFalse(Task.complete(0).map(isOne).await());
+	}
 }
