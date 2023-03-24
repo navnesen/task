@@ -146,4 +146,18 @@ class TaskTest {
 	public void successOr() {
 		assertDoesNotThrow(() -> assertEquals(1, Task.complete(1).or(ex -> -1).await()));
 	}
+
+	@Test
+	public void failureOr() {
+		assertDoesNotThrow(() -> assertEquals(-1, Task.fail(new Exception("hello")).or(ex -> {
+			assertThrows(
+				Exception.class,
+				() -> {
+					throw ex;
+				},
+				"hello"
+			);
+			return -1;
+		}).await()));
+	}
 }
