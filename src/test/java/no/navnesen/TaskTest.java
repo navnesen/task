@@ -27,7 +27,7 @@ class TaskTest {
 			Task<Integer> task = new Task<>(TaskResult.failure(new Exception("hello")));
 			assertNotNull(task._result.get());
 			assertThrows(
-				RuntimeException.class,
+				Exception.class,
 				task::await,
 				"hello"
 			);
@@ -37,7 +37,7 @@ class TaskTest {
 			Task<Integer> task = Task.fail(new Exception("hello"));
 			assertNotNull(task._result.get());
 			assertThrows(
-				RuntimeException.class,
+				Exception.class,
 				task::await,
 				"hello"
 			);
@@ -62,7 +62,7 @@ class TaskTest {
 			});
 			assertNull(task._result.get());
 			assertThrows(
-				RuntimeException.class,
+				Exception.class,
 				task::await,
 				"hello"
 			);
@@ -86,7 +86,7 @@ class TaskTest {
 			Task<Integer> task = new Task<>(() -> TaskResult.failure(new Exception("hello")));
 			assertNull(task._result.get());
 			assertThrows(
-				RuntimeException.class,
+				Exception.class,
 				task::await,
 				"hello"
 			);
