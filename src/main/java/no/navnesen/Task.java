@@ -33,24 +33,20 @@ public class Task<T> implements Awaitable<T> {
 
 	public Task(TaskAction<T> action) {
 		new Thread(() -> {
-			synchronized (this) {
-				try {
-					this.completed(action.run());
-				} catch (Exception exception) {
-					this.failed(exception);
-				}
+			try {
+				this.completed(action.run());
+			} catch (Exception exception) {
+				this.failed(exception);
 			}
 		}).start();
 	}
 
 	public Task(TaskActionResult<T> action) {
 		new Thread(() -> {
-			synchronized (this) {
-				try {
-					this.applyResult(action.run());
-				} catch (Exception exception) {
-					this.failed(exception);
-				}
+			try {
+				this.applyResult(action.run());
+			} catch (Exception exception) {
+				this.failed(exception);
 			}
 		}).start();
 	}
@@ -125,7 +121,7 @@ public class Task<T> implements Awaitable<T> {
 		this.applyResult(TaskResult.failure(exception));
 	}
 
-	protected void applyResult(AwaitableResult<T> result) {
+	protected synchronized void applyResult(AwaitableResult<T> result) {
 		this._result.set(TaskResult.from(result));
 		notifyAll();
 	}
