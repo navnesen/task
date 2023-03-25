@@ -7,6 +7,15 @@ import java.util.concurrent.atomic.AtomicReference;
  * A quick and easy method for performing synchronous tasks in an asynchronous manner.
  */
 public class Task<T> implements Awaitable<T> {
+	@SuppressWarnings("unchecked")
+	private static <T extends Throwable> void throwException(Throwable exception, Object __) throws T {
+		throw (T) exception;
+	}
+
+	public static void throwException(Throwable exception) {
+		Task.<RuntimeException>throwException(exception, null);
+	}
+
 	public static <T> Task<T> complete(T value) {
 		return new Task<>(TaskResult.success(value));
 	}
@@ -55,7 +64,7 @@ public class Task<T> implements Awaitable<T> {
 	public T await() {
 		final TaskResult<T> result = this.waitForResult();
 		if (result.didThrow) {
-			throw new RuntimeException(result.exception);
+			Task.throwException(result.exception);
 		}
 		return result.value;
 	}
