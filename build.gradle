@@ -8,11 +8,13 @@ version "UNVERSIONED"
 
 repositories {
 	mavenCentral()
+	maven { url "https://jitpack.io" }
 }
 
 dependencies {
 	testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.1"
 	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.1"
+	implementation "no.navnesen:raise:0.1.0"
 }
 
 test {
