@@ -99,6 +99,22 @@ public class Task<T> implements Awaitable<T> {
 		});
 	}
 
+	public Task<T> with(TaskWithResultAction<T> action) {
+		return new Task<>(() -> {
+			TaskResult<T> result = this.waitForResult();
+			if (!result.didThrow) action.run(result.value);
+			return result;
+		});
+	}
+
+	public Task<T> withException(TaskWithExceptionAction action) {
+		return new Task<>(() -> {
+			TaskResult<T> result = this.waitForResult();
+			if (result.didThrow) action.run(result.exception);
+			return result;
+		});
+	}
+
 	@Override
 	public synchronized TaskResult<T> waitForResult() {
 		TaskResult<T> result = this._result.get();
